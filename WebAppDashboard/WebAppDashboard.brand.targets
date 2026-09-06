@@ -39,6 +39,19 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3296.44" />
   </ItemGroup>
 
+  <!--
+    Entfernt die vom WebView2-Paket bedingungslos hinzugefügte WPF-DLL, wenn das
+    Projekt kein WPF nutzt (beseitigt MSB3277 "WindowsBase 5.0.0.0 vs 4.0.0.0").
+    Guard: Varianten mit UseWPF=true behalten die Referenz (dann existiert das
+    echte WindowsBase und der Konflikt verschwindet von selbst).
+  -->
+  <Target Name="RemoveUnusedWebView2Wpf" BeforeTargets="ResolveAssemblyReferences"
+          Condition="'$(UseWPF)' != 'true'">
+    <ItemGroup>
+      <Reference Remove="@(Reference->WithMetadataValue('FileName', 'Microsoft.Web.WebView2.Wpf'))" />
+    </ItemGroup>
+  </Target>
+
   <!-- Branding-Werte als Assembly-Metadaten; werden zur Laufzeit von Brand.cs gelesen -->
   <ItemGroup>
     <AssemblyMetadata Include="BrandId"              Value="$(BrandId)" />

@@ -43,7 +43,24 @@ dotnet publish WebAppDashboard/WebAppDashboard.csproj -c Release -r win-x64 --se
 - The publish flags matter: `--self-contained true` (runtime embedded),
   `PublishSingleFile=true` (one EXE), `IncludeNativeLibrariesForSelfExtract=true` (WebView2 loader inside the EXE).
 - As in the original project, the publish output is a single EXE; `bin/`/`obj/` are only intermediate build outputs and never part of a release.
-- Known, harmless warning: MSB3277 (WindowsBase conflict between the .NET reference and WebView2.dll) – do not "fix".
+
+### MSB3277 (WindowsBase 5.0.0.0 vs 4.0.0.0) – handled, not a bug
+
+The WebView2 package unconditionally references `Microsoft.Web.WebView2.Wpf.dll`
+(compiled against .NET 5 WPF, i.e. `WindowsBase 5.0.0.0`) for every net5.0+ project,
+even WinForms-only ones. WinForms-only apps get the `WindowsBase 4.0.0.0` facade from
+`Microsoft.NETCore.App` instead, so MSBuild reports MSB3277. It is compile-time only
+(the WPF DLL is never used/loaded) and also occurred in the original project.
+
+This is handled centrally: `WebAppDashboard.brand.targets` removes the unused WPF
+reference via the `RemoveUnusedWebView2Wpf` target, guarded by `UseWPF`. Therefore
+no action is needed and the warning must **not** reappear in builds.
+
+- Variants that deliberately use WPF set `UseWPF=true` – the target then keeps the
+  reference and the conflict resolves itself (real `WindowsBase` from WindowsDesktop.App).
+- When bumping the WebView2 package, run `dotnet build WebAppDashboard.slnx` and confirm
+  MSB3277 stays gone (the package bug persists in recent versions; the removal is a
+  harmless no-op once Microsoft fixes it).
 
 ## Versioning
 
