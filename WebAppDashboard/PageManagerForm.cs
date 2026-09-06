@@ -31,16 +31,20 @@ namespace WebAppDashboard
             _activeIndex = Math.Clamp(activeIndex, 0, Math.Max(0, pages.Count - 1));
 
             Text                = Strings.DlgPagesTitle;
-            AutoScaleMode       = AutoScaleMode.Font;
-            AutoScaleDimensions = new SizeF(7F, 15F);
             FormBorderStyle     = FormBorderStyle.FixedDialog;
             StartPosition       = FormStartPosition.CenterParent;
             ClientSize          = new Size(760, 500);
             MinimizeBox         = false;
             MaximizeBox         = false;
 
-            // Button dimensions – uniform across all buttons
-            const int btnH  = 40;   // height shared by all buttons
+            // Schrifthöhe als Skalierungsbasis: Texthöhen (Beschriftungen, Felder,
+            // Buttons) werden zur Laufzeit abgeleitet, damit bei Windows-Skalierung
+            // (z. B. 150 %) keine Unterlängen von Buchstaben wie y oder p abgeschnitten
+            // werden. Diese Werte gelten für alle Felder einheitlich.
+            int lblH = Font.Height;      // komplette Zeilenhöhe inkl. Unterlängen
+            int tbH  = Font.Height + 6;  // Einzeilen-TextBox
+            int btnH = Font.Height + 25; // Buttons
+
             const int btnW  = 130;  // width of Apply / OK / Cancel
             const int crudW = 48;   // width of CRUD buttons (+/−/↑/↓)
 
@@ -64,13 +68,24 @@ namespace WebAppDashboard
             _btnDown.Click   += BtnDown_Click;
 
             // --- Right column: Name + URL + Border color ---
+            // Reihenabstände ebenfalls aus der Schrift ableiten; die eigentlichen
+            // Texthöhen (lblH, tbH) sind oben berechnet und bei allen drei Feldern gleich.
             const int rx = 234, rw = 514;
-            var lblName = new Label { Text = Strings.DlgPageName, Left = rx, Top = 12,  Width = rw, Height = 20 };
-            _txtName    = new TextBox                             { Left = rx, Top = 36,  Width = rw };
-            var lblUrl  = new Label { Text = Strings.DlgPageUrl,  Left = rx, Top = 78,  Width = rw, Height = 20 };
-            _txtUrl     = new TextBox                             { Left = rx, Top = 102, Width = rw };
-            var lblColor = new Label { Text = Strings.DlgPageBorderColor, Left = rx, Top = 140, Width = rw, Height = 20 };
-            _txtBorderColor = new TextBox { Left = rx, Top = 164, Width = rw };
+            const int lblGap = 10;   // Abstand Beschriftung → Eingabefeld
+            const int rowGap = 14;   // Abstand Eingabefeld → nächste Beschriftung
+
+            int y = 12;
+            var lblName = new Label { Text = Strings.DlgPageName, Left = rx, Top = y, Width = rw, Height = lblH };
+            y += lblH + lblGap;
+            _txtName    = new TextBox { Left = rx, Top = y, Width = rw, Height = tbH };
+            y += tbH + rowGap;
+            var lblUrl  = new Label { Text = Strings.DlgPageUrl,  Left = rx, Top = y, Width = rw, Height = lblH };
+            y += lblH + lblGap;
+            _txtUrl     = new TextBox { Left = rx, Top = y, Width = rw, Height = tbH };
+            y += tbH + rowGap;
+            var lblColor = new Label { Text = Strings.DlgPageBorderColor, Left = rx, Top = y, Width = rw, Height = lblH };
+            y += lblH + lblGap;
+            _txtBorderColor = new TextBox { Left = rx, Top = y, Width = rw, Height = tbH };
             // Separator
             var separator = new Panel
             {

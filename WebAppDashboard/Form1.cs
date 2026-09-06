@@ -57,7 +57,7 @@ namespace WebAppDashboard
         private const int HTBOTTOMRIGHT          = 17;
 
         private int ResizeBorder  => _settings.Window.BorderSize;
-        private int DragBarHeight => Math.Max(_settings.Window.BorderSize, 20);
+        private int DragBarHeight => Math.Max(_settings.Window.BorderSize, Font.Height + 8);
 
         [DllImport("user32.dll", SetLastError = false)]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
@@ -435,18 +435,21 @@ namespace WebAppDashboard
             using var form = new Form
             {
                 Text                = title,
-                AutoScaleMode       = AutoScaleMode.Font,
-                AutoScaleDimensions = new SizeF(7F, 15F),
                 FormBorderStyle     = FormBorderStyle.FixedDialog,
                 StartPosition       = FormStartPosition.CenterParent,
                 ClientSize          = new Size(580, 180),
                 MinimizeBox = false, MaximizeBox = false
             };
-            var label   = new Label   { Text = prompt,       Left = 12, Top = 14, Width = 556, Height = 20 };
-            var textBox = new TextBox { Text = initialValue,  Left = 12, Top = 42, Width = 556 };
-            var ok      = new Button  { Text = "OK",          Left = 280, Top = 132, Width = 140, Height = 34,
+            // Texthöhen aus der Schrifthöhe ableiten, damit bei Windows-Skalierung
+            // (z. B. 150 %) keine Unterlängen (y, p, …) abgeschnitten werden.
+            int lblH = form.Font.Height;
+            int tbH  = form.Font.Height + 6;
+            int btnH = form.Font.Height + 19;
+            var label   = new Label   { Text = prompt,       Left = 12, Top = 14, Width = 556, Height = lblH };
+            var textBox = new TextBox { Text = initialValue,  Left = 12, Top = 42, Width = 556, Height = tbH };
+            var ok      = new Button  { Text = "OK",          Left = 280, Top = 132, Width = 140, Height = btnH,
                                         DialogResult = DialogResult.OK };
-            var cancel  = new Button  { Text = Strings.DlgCancel, Left = 428, Top = 132, Width = 140, Height = 34,
+            var cancel  = new Button  { Text = Strings.DlgCancel, Left = 428, Top = 132, Width = 140, Height = btnH,
                                         DialogResult = DialogResult.Cancel };
             form.Controls.AddRange([label, textBox, ok, cancel]);
             form.AcceptButton = ok;
@@ -951,7 +954,6 @@ namespace WebAppDashboard
                 _winLblPage = new Label
                 {
                     Text      = _settings.ActivePage?.Name ?? "",
-                    Font      = new Font("Segoe UI", 9f, FontStyle.Regular, GraphicsUnit.Point),
                     TextAlign = ContentAlignment.MiddleLeft,
                     AutoSize  = false,
                     BackColor = BackColor,

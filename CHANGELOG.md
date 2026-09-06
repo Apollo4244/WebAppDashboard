@@ -8,6 +8,18 @@ Full per-feature history of earlier releases can be found in the brand folders, 
 
 ---
 
+## [Unreleased]
+
+### Fixed
+- **Text clipped at high Windows scaling (125–200 %):** Labels, input fields and
+  buttons now derive their heights from the actual font height (`Font.Height`)
+  instead of fixed pixel values, so descenders (`y`, `p`, `g`, …) are no longer
+  cut off – in the Page Manager, the custom color/width/zoom dialogs and the
+  borderless drag-bar title. `AutoScaleMode.Font` is not used; layouts are built
+  from real font metrics at runtime.
+
+---
+
 ## [1.0.7]
 
 ### Added

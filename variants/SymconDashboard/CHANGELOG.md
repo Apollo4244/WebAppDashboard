@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [Unreleased]
+
+### Fixed
+- **Text clipped at high Windows scaling (125–200 %):** Labels, input fields and
+  buttons now derive their heights from the actual font height (`Font.Height`)
+  instead of fixed pixel values, so descenders (`y`, `p`, `g`, …) are no longer
+  cut off – in the Page Manager, the custom color/width/zoom dialogs and the
+  borderless drag-bar title.
+
+---
+
 ## [1.0.7]
 
 ### Added

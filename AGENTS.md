@@ -157,6 +157,29 @@ Starting point: a 1:1 copy of `variants/SymconDashboard/`.
 3. `git tag vX.Y.Z && git push origin main --tags`
 4. GitHub Actions publishes all variants and creates the release (all `*.exe` as assets).
 
+## DPI / Windows Scaling (WinForms)
+
+The app is DPI-aware (the OS scales fonts on its own), but **`AutoScaleMode.Font`
+does not scale hand-built forms** – the programmatic forms do not use the designer
+pattern, so auto-scaling never takes effect there. All layouts therefore work
+with real font metrics at runtime:
+
+- **Derive text-bearing heights from `Font.Height`** – never hard-code pixel heights.
+  Otherwise descenders (y, p, g, …) get clipped at 125–200 % scaling.
+  - Label: `Height = Font.Height`
+  - Single-line TextBox: `Height = Font.Height + 6`
+  - Buttons: `Height = Font.Height + 19` (small) / `Font.Height + 25` (large)
+- Build rows from these heights with a uniform label→field gap (~10 px) and
+  row gap (~14 px) so all fields stay identically spaced at every DPI.
+- The borderless window uses `DragBarHeight = Max(BorderSize, Font.Height + 8)` so
+  the page label and caption icons fit at any scaling; text labels inherit the
+  form's default font instead of creating a fixed-size `Font`.
+- Give dialogs a **fixed `ClientSize`** (unscaled); only the text-sized controls
+  scale themselves. Do not apply a global size multiplier – that would push
+  dialogs off small screens running at high DPI.
+- Do not (re-)introduce `AutoScaleMode`/`AutoScaleDimensions`; follow this scheme
+  when adding controls anywhere in the app.
+
 ## Conventions
 
 - Folder `scripts/` in lowercase; build scripts go to `scripts/`.
