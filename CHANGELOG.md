@@ -8,7 +8,7 @@ Full per-feature history of earlier releases can be found in the brand folders, 
 
 ---
 
-## [Unreleased]
+## [1.0.7]
 
 ### Added
 - **Per-page border color:** Each page in the *Manage pages* dialog can define

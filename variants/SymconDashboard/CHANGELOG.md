@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Unreleased]
+## [1.0.7]
 
 ### Added
 - **Per-page border color:** Each page in the *Manage pages* dialog can define
