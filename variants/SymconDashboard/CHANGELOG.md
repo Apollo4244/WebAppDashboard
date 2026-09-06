@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Per-page border color:** Each page in the *Manage pages* dialog can define
+  its own border color (`#RRGGBB`), overriding the global border color for that
+  page only. An empty field falls back to the global setting.
+
+### Fixed
+- **Auto border color applies without manual refresh:** The detected page
+  background color is cached per page and re-applied immediately when switching
+  pages; switching the global mode to *auto* starts detection right away.
+- **Invalid custom colors rejected:** Hex input in the tray menu and the
+  Page Manager accepts only `#RRGGBB`; 8-digit alpha colors (`#AARRGGBB`) and
+  otherwise malformed values are rejected with a warning.
+
+---
+
 ## [1.0.6] – Multi-URL Pages & Window controls
 
 ### Added

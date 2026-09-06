@@ -17,12 +17,13 @@ Ein schlanker, rahmenloser Dashboard-Viewer für [IP-Symcon](https://www.symcon.
 - **System-Tray-Integration** – Rechtsklick auf das Tray-Icon öffnet das vollständige Menü; Doppelklick oder Neustart stellt das Fenster wieder her
 - **Einzelinstanz** – ein erneuter Programmstart stellt das bereits laufende Fenster in den Vordergrund
 - **Mehrere Seiten** – beliebig viele benannte Seiten (Name + URL) konfigurierbar; Umschalten über das Tray-Untermenü *Seiten*, die ⊞-Schaltfläche in der Drag-Leiste oder den Seiten-Manager. Der erste Eintrag ist die Startseite.
-- **Seiten-Manager** – eigener Dialog zum Hinzufügen, Umbenennen, Sortieren und Entfernen von Seiten; *Übernehmen* speichert sofort, ohne den Dialog zu schließen.
+- **Seiten-Manager** – eigener Dialog zum Hinzufügen, Umbenennen, Sortieren und Entfernen von Seiten, inkl. eigener Rahmenfarbe pro Seite (leer = global); *Übernehmen* speichert sofort, ohne den Dialog zu schließen.
 - **Taskleisten-Symbol** – unabhängig vom rahmenlosen Modus steuerbar, ob die App in der Windows-Taskleiste erscheint.
 - **Konfigurierbare Rahmenfarbe**
   - Windows-Akzentfarbe
   - Automatisch von der Seitenhintergrundfarbe erkannt
   - Benutzerdefinierte Hex-Farbe
+  - Pro Seite gesetzte Farbe (leer = global)
 - **Konfigurierbare Rahmenbreite** – Voreinstellungen oder eigener Wert (2–40 px)
 - **Konfigurierbarer Zoom** – Voreinstellungen (75–200 %) oder eigener Wert (25–500 %), wird beim Neustart wiederhergestellt
 - **Kiosk-Modus** – Vollbild-Sperrung per Klick: `TopMost` + voller aktueller Monitor; umschalten über Drag-Leisten-Schaltfläche oder Tray-Menü
@@ -64,6 +65,7 @@ Kein Installer erforderlich.
 | Fenster minimieren | `_`-Schaltfläche in der Drag-Leiste **oder** Taskleistensymbol anklicken |
 | Seite wechseln | Tray-Menü → *Seiten* → Seitenname **oder** ⊞-Schaltfläche in der Drag-Leiste |
 | Seiten verwalten | Tray-Menü → *Seiten → Seiten verwalten…* |
+| Rahmenfarbe pro Seite setzen | Tray-Menü → *Seiten → Seiten verwalten…* → Feld *Rahmenfarbe* (leer = global) |
 | Rahmenlosen Modus umschalten | Tray-Menü → *Rahmenloser Modus* (Häkchen) |
 | Rahmenfarbe ändern | Tray-Menü → *Rahmenlos → Farbe* |
 | Rahmenbreite ändern | Tray-Menü → *Rahmenlos → Breite* |

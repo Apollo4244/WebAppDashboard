@@ -17,12 +17,13 @@ A lightweight, borderless dashboard viewer for [IP-Symcon](https://www.symcon.de
 - **System tray integration** – right-click the tray icon for the full menu; double-click or re-launch to restore the window
 - **Single-instance** – launching the app a second time restores the existing window
 - **Multiple pages** – configure any number of named pages (name + URL); switch instantly via the tray *Pages* submenu, the drag-bar list button (⊞), or the Page Manager dialog. The first entry is the startup page.
-- **Page Manager** – dedicated dialog to add, rename, reorder and remove pages; *Apply* persists changes immediately without closing the dialog.
+- **Page Manager** – dedicated dialog to add, rename, reorder and remove pages, including a per-page border color override (empty = global); *Apply* persists changes immediately without closing the dialog.
 - **Taskbar icon toggle** – independently control whether the app appears in the Windows taskbar, regardless of borderless mode.
 - **Configurable border color**
   - Windows accent color
   - Auto-detected from the page background
   - Custom hex color
+  - Per-page override (empty = global)
 - **Configurable border width** – presets or custom value (2–40 px)
 - **Configurable zoom level** – presets (75–200 %) or custom value (25–500 %), saved across restarts
 - **Kiosk mode** – one-click full-screen lockdown: `TopMost` + full current-screen bounds; toggle via drag bar button or tray menu
@@ -64,6 +65,7 @@ No installer required.
 | Minimize window | Drag bar `_` button **or** click the taskbar button |
 | Switch page | Tray menu → *Pages* → page name **or** drag-bar ⊞ button |
 | Manage pages | Tray menu → *Pages → Manage pages…* |
+| Set per-page border color | Tray menu → *Pages → Manage pages…* → *Border color* field (empty = global) |
 | Toggle borderless mode | Tray menu → *Borderless mode* (checkmark) |
 | Change border color | Tray menu → *Borderless → Color* |
 | Change border width | Tray menu → *Borderless → Width* |

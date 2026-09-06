@@ -8,6 +8,25 @@ Full per-feature history of earlier releases can be found in the brand folders, 
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Per-page border color:** Each page in the *Manage pages* dialog can define
+  its own border color (`#RRGGBB`), overriding the global border color for that
+  page only. An empty field falls back to the global setting.
+
+### Fixed
+- **Auto border color applies without manual refresh:** The detected page
+  background color is cached per page, so the matching border color is applied
+  immediately when switching pages; switching the global mode to *auto* starts
+  detection right away.
+- **Invalid custom colors can no longer be saved:** Hex input in the tray menu
+  and the Page Manager accepts only `#RRGGBB`; 8-digit alpha colors
+  (`#AARRGGBB`), shorter or otherwise malformed values are rejected with a
+  warning.
+
+---
+
 ## [1.0.6] – Multi-brand refactor
 
 ### Added
