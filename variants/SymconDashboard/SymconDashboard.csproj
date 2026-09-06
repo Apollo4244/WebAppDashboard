@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Symcon-Dashboard-Variante.
+    Nutzt die Quellen des Kern-Projekts (WebAppDashboard) und überschreibt
+    nur die Branding-Werte sowie das Icon.
+  -->
+  <PropertyGroup>
+    <BrandId>SymconDashboard</BrandId>
+  </PropertyGroup>
+
+  <Import Project="..\..\WebAppDashboard\WebAppDashboard.brand.props" />
+
+  <PropertyGroup>
+    <BrandDisplayName>Symcon Dashboard</BrandDisplayName>
+    <BrandDefaultPageName>SYMCON</BrandDefaultPageName>
+    <BrandDefaultUrl>http://localhost:3777/</BrandDefaultUrl>
+    <BrandMutexPrefix>Symcon-Dashboard-for-Windows</BrandMutexPrefix>
+    <ApplicationIcon>$(MSBuildThisFileDirectory)app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <Import Project="..\..\WebAppDashboard\WebAppDashboard.brand.targets" />
+
+</Project>

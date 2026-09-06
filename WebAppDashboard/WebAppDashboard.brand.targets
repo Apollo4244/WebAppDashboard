@@ -1,0 +1,51 @@
+<Project>
+  <!--
+    WebAppDashboard.brand.targets
+    Gemeinsame Items (Quellen, Ressourcen, Pakete, Branding-Metadaten).
+
+    In jeder Variante an LETZTER Position importieren, damit alle Branding-Properties
+    (z.B. AssemblyName, BrandId) bereits auf den Endwert gesetzt wurden.
+  -->
+
+  <!-- Quellen aus dem Kern-Verzeichnis einbinden -->
+  <ItemGroup>
+    <Compile Include="$(CoreRoot)**\*.cs"
+             Exclude="$(CoreRoot)bin\**;$(CoreRoot)obj\**;$(CoreRoot)**\*.Designer.cs" />
+    <Compile Include="$(CoreRoot)**\*.Designer.cs"
+             Exclude="$(CoreRoot)bin\**;$(CoreRoot)obj\**" />
+  </ItemGroup>
+
+  <!-- Designer-Metadaten (WinForms-Designer in Visual Studio) -->
+  <ItemGroup>
+    <Compile Update="$(CoreRoot)Form1.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="$(CoreRoot)Form1.Designer.cs"><DependentUpon>Form1.cs</DependentUpon></Compile>
+    <Compile Update="$(CoreRoot)PageManagerForm.cs"><SubType>Form</SubType></Compile>
+  </ItemGroup>
+
+  <!-- Lokalisierte Ressourcen. LogicalName folgt dem AssemblyName, damit der
+       ResourceManager zur Laufzeit den Basename aus dem Assembly-Namen ableiten kann. -->
+  <ItemGroup>
+    <EmbeddedResource Include="$(CoreRoot)Strings.resx">
+      <LogicalName>$(AssemblyName).Strings.resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(CoreRoot)Strings.de.resx">
+      <LogicalName>$(AssemblyName).Strings.de.resources</LogicalName>
+      <Culture>de</Culture>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- Laufzeit-Abhängigkeit -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3296.44" />
+  </ItemGroup>
+
+  <!-- Branding-Werte als Assembly-Metadaten; werden zur Laufzeit von Brand.cs gelesen -->
+  <ItemGroup>
+    <AssemblyMetadata Include="BrandId"              Value="$(BrandId)" />
+    <AssemblyMetadata Include="BrandDisplayName"     Value="$(BrandDisplayName)" />
+    <AssemblyMetadata Include="BrandDefaultPageName" Value="$(BrandDefaultPageName)" />
+    <AssemblyMetadata Include="BrandDefaultUrl"      Value="$(BrandDefaultUrl)" />
+    <AssemblyMetadata Include="BrandMutexPrefix"     Value="$(BrandMutexPrefix)" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,50 @@
+<Project>
+  <!--
+    WebAppDashboard.brand.props
+    Gemeinsame Build-Einstellungen + Branding-Defaults (generische Werte).
+
+    In jeder Variante an ERSTER Position importieren, nachdem <BrandId> gesetzt wurde.
+    Die Variante kann danach die gewünschten Branding-Properties überschreiben.
+  -->
+
+  <PropertyGroup>
+    <CoreRoot>$(MSBuildThisFileDirectory)</CoreRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+
+    <!-- Quelldateien/Ressourcen werden explizit über brand.targets eingebunden -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+
+    <!-- PublishSingleFile: keine .pdb / NuGet-Doku-XMLs neben der EXE -->
+    <DebugType Condition="'$(PublishSingleFile)' == 'true'">none</DebugType>
+    <AllowedReferenceRelatedFileExtensions Condition="'$(PublishSingleFile)' == 'true'">none</AllowedReferenceRelatedFileExtensions>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      Branding-Defaults (generische Variante).
+      Eine neue Marke überschreibt im eigenen .csproj nur die gewünschten Werte:
+        BrandId               -> Identität / AssemblyName / RootNamespace
+        BrandDisplayName      -> Titel in Titelleiste/Tray
+        BrandDefaultPageName  -> Name der ersten Seite beim Erststart
+        BrandDefaultUrl       -> Start-URL beim Erststart
+        BrandMutexPrefix      -> Basis der Single-Instance-Mutex-/Event-Namen
+    -->
+    <RootNamespace     Condition="'$(RootNamespace)' == ''">$(BrandId)</RootNamespace>
+    <AssemblyName      Condition="'$(AssemblyName)' == ''">$(BrandId)</AssemblyName>
+    <BrandDisplayName  Condition="'$(BrandDisplayName)' == ''">WebApp Dashboard</BrandDisplayName>
+    <BrandDefaultPageName Condition="'$(BrandDefaultPageName)' == ''">Dashboard</BrandDefaultPageName>
+    <BrandDefaultUrl   Condition="'$(BrandDefaultUrl)' == ''">http://localhost:8080/</BrandDefaultUrl>
+    <BrandMutexPrefix  Condition="'$(BrandMutexPrefix)' == ''">WebApp-Dashboard</BrandMutexPrefix>
+  </PropertyGroup>
+
+</Project>

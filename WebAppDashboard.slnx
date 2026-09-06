@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="WebAppDashboard/WebAppDashboard.csproj" />
+  <Project Path="variants/SymconDashboard/SymconDashboard.csproj" />
+</Solution>

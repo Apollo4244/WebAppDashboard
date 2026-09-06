@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish all variants
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $projects = @(
+            "WebAppDashboard/WebAppDashboard.csproj"
+          ) + (Get-ChildItem -Path "variants" -Filter *.csproj -Recurse | ForEach-Object { $_.FullName })
+          $outRoot = Join-Path $env:GITHUB_WORKSPACE "publish"
+          foreach ($csproj in $projects) {
+            $name = [System.IO.Path]::GetFileNameWithoutExtension($csproj)
+            Write-Host "Publishing $name ..."
+            dotnet publish $csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o (Join-Path $outRoot $name)
+          }
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: publish/**/*.exe
+          generate_release_notes: true
