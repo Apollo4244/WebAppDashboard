@@ -38,8 +38,35 @@ Jede Marke bringt ein eigenes `README.md`, `README-de.md` und `CHANGELOG.md` neb
 - **Kiosk-Modus** – Vollbild-Sperrung per Klick: `TopMost` + voller aktueller Monitor; umschalten über Drag-Leisten-Schaltfläche oder Tray-Menü
 - **Einstellungen werden gespeichert** – Fensterposition, -größe, URL und alle Optionen werden automatisch gesichert
 - **Erststart-Einrichtung** – beim ersten Start wird nach einer URL gefragt
+- **Unsichere Verbindungen** – für lokale/Intranet-Dashboards: `http`-Seiten und `https`-Seiten mit ungültigen (z. B. selbstsignierten) Zertifikaten laden für die konfigurierten Seiten-Hosts **ohne Warnung**; Login-Weiterleitungen und Fremd-Hosts bleiben streng validiert
 - **Fehlerseiten** – übersichtliche Fehlerseiten bei HTTP- und Netzwerkfehlern
 - **Lokalisierung** – Englisch und Deutsch, automatisch anhand der Windows-Spracheinstellung gewählt
+
+---
+
+## Unsichere & nicht vertrauenswürdige Verbindungen
+
+Diese App ist **für Dashboards gedacht, die über `http` laufen oder selbstsignierte /
+ungültige TLS-Zertifikate verwenden** – typisch für LAN-Geräte (IP-Symcon, NAS,
+Smart-Home-Gateways usw.). Solche Seiten werden deshalb **ohne Sicherheitswarnung**
+angezeigt:
+
+- **`http`-Seiten (unverschlüsselt)** werden ohne Warnung dargestellt.
+- **`https`-Seiten mit ungültigen/nicht vertrauenswürdigen Zertifikaten** werden
+  **automatisch akzeptiert**, aber **nur für exakt den Host + Port der im
+  Seiten-Manager konfigurierten Seiten.**
+
+**Gültigkeitsbereich:** Die Zertifikats-Ausnahme gilt ausschließlich für den
+passenden Host + Port. Weiterleitungen auf andere Hosts (z. B. zu einem externen
+Login-Anbieter), Links zu anderen Servern und eingebettete Ressourcen Dritter werden
+**weiterhin streng validiert** – dort erscheint die übliche Zertifikats-Warnung.
+
+> **Sicherheitshinweis:** Die App ist **ausschließlich für vertrauenswürdige lokale
+> oder Intranet-Weboberflächen gedacht**. Über `http` übertragene Daten sind
+> **nicht verschlüsselt**, und ein akzeptiertes ungültiges Zertifikat erlaubt jedem,
+> der den Host imitiert, den Verkehr abzuhören oder zu verändern. Die App nur in
+> vertrauenswürdigen Netzen betreiben und für Produktivsysteme ein echtes
+> HTTPS-Zertifikat verwenden.
 
 ---
 

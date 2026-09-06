@@ -1197,6 +1197,11 @@ namespace WebAppDashboard
             await webView.EnsureCoreWebView2Async(env);
             webView.ZoomFactor = _settings.Window.ZoomFactor;
             webView.NavigationCompleted += WebView_NavigationCompleted;
+            webView.CoreWebView2.ServerCertificateErrorDetected += (_, e) =>
+            {
+                if (IsTlsCertificateAllowed(e.RequestUri))
+                    e.Action = CoreWebView2ServerCertificateErrorAction.AlwaysAllow;
+            };
 
             if (Program.ActivateEventName is { } evtName)
             {
@@ -1219,6 +1224,20 @@ namespace WebAppDashboard
                 ApplyWebViewBounds();
             }
         }
+
+        private bool IsTlsCertificateAllowed(string? requestUri)
+            => !string.IsNullOrEmpty(requestUri)
+            && Uri.TryCreate(requestUri, UriKind.Absolute, out Uri? uri)
+            && _settings.Pages.Any(p =>
+                Uri.TryCreate(p.Url, UriKind.Absolute, out Uri? pageUri)
+                && string.Equals(uri.Host, pageUri.Host, StringComparison.OrdinalIgnoreCase)
+                && uri.Port == pageUri.Port);
+
+        private static bool IsTlsCertificateError(CoreWebView2WebErrorStatus status)
+            => status is CoreWebView2WebErrorStatus.CertificateIsInvalid
+                or CoreWebView2WebErrorStatus.CertificateExpired
+                or CoreWebView2WebErrorStatus.CertificateCommonNameIsIncorrect
+                or CoreWebView2WebErrorStatus.CertificateRevoked;
 
         private void WebView_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
         {
@@ -1250,6 +1269,8 @@ namespace WebAppDashboard
             {
                 // Netzwerkfehler (kein Server, DNS, Timeout, …)
                 string url = webView.Source?.ToString() ?? _settings.ActivePage?.Url ?? "";
+                if (IsTlsCertificateAllowed(url) && IsTlsCertificateError(e.WebErrorStatus))
+                    return;
                 string message = e.WebErrorStatus switch
                 {
                     CoreWebView2WebErrorStatus.HostNameNotResolved =>

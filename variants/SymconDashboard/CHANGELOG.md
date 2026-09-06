@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- **Invalid TLS certificates are accepted for configured pages:** `https` pages
+  with invalid/untrusted certificates (e.g. self-signed) load **without a warning**
+  as long as the host + port matches a page configured in the Page Manager; plain
+  `http` pages are unaffected. Every other host (login redirects, external links,
+  embedded resources) stays strictly validated and shows the usual certificate
+  warning.
+
 ### Fixed
 - **Text clipped at high Windows scaling (125–200 %):** Labels, input fields and
   buttons now derive their heights from the actual font height (`Font.Height`)

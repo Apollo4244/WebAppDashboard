@@ -29,8 +29,32 @@ A lightweight, borderless dashboard viewer for [IP-Symcon](https://www.symcon.de
 - **Kiosk mode** – one-click full-screen lockdown: `TopMost` + full current-screen bounds; toggle via drag bar button or tray menu
 - **Persistent settings** – window position, size, URL and all preferences are saved automatically
 - **First-run setup** – prompts for a URL on the first launch
+- **Untrusted connections** – for local/intranet dashboards: `http` pages and `https` pages with invalid (e.g. self-signed) certificates load **without warnings** for the configured page hosts; login redirects and third-party hosts stay strictly validated
 - **Error pages** – friendly error screens for HTTP and network failures
 - **Localization** – English and German, automatically selected from Windows language settings
+
+---
+
+## Untrusted & Insecure Connections
+
+This app is **designed for dashboards that run on plain `http` or use self-signed /
+invalid TLS certificates** — typical for LAN devices (IP-Symcon, NAS, smart-home
+gateways, etc.). Such pages are therefore handled **without a security warning**:
+
+- **`http` pages (unencrypted)** are displayed without any warning.
+- **`https` pages with invalid/untrusted certificates** are **accepted automatically**,
+  but **only for the exact host + port of the pages configured in the Page Manager.**
+
+**Scope:** The certificate exception applies solely to the matching host + port.
+Redirects to other hosts (e.g. an external login provider), links to other servers
+and embedded resources from third-party hosts are **validated strictly again** — the
+usual certificate warning is shown there.
+
+> **Security note:** This app is intended for **trusted local or intranet web
+> front-ends only**. Data sent over `http` is **not encrypted**, and accepting an
+> invalid certificate lets anyone who can impersonate the host intercept or modify
+> the traffic. Run the app on trusted networks and use a proper HTTPS certificate
+> for production systems.
 
 ---
 
