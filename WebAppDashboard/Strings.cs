@@ -36,6 +36,7 @@ internal static class Strings
     public static string DlgPagesTitle       => Get();
     public static string DlgPageName         => Get();
     public static string DlgPageUrl          => Get();
+    public static string DlgPageBorderColor  => Get();
     public static string DlgPageApply        => Get();
     public static string DlgPageNewName      => Get();
     public static string DlgPageNameEmpty    => Get();

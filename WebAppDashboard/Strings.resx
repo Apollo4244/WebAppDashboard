@@ -29,6 +29,7 @@
   <data name="DlgPagesTitle" xml:space="preserve"><value>Manage pages</value></data>
   <data name="DlgPageName" xml:space="preserve"><value>Name:</value></data>
   <data name="DlgPageUrl" xml:space="preserve"><value>URL:</value></data>
+  <data name="DlgPageBorderColor" xml:space="preserve"><value>Border color (empty = global):</value></data>
   <data name="DlgPageApply" xml:space="preserve"><value>Apply</value></data>
   <data name="DlgPageNewName" xml:space="preserve"><value>New page</value></data>
   <data name="DlgPageNameEmpty" xml:space="preserve"><value>Please enter a name for this page.</value></data>

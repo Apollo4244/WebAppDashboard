@@ -11,7 +11,6 @@ namespace WebAppDashboard
         private ToolStripMenuItem _trayToggleItem = null!;
         private ToolStripMenuItem _zoomMenu       = null!;
         private ToolStripMenuItem _kioskMenuItem  = null!;
-        private Color?            _autoDetectedColor;
         private Label?            _winBtnKiosk;
         private Label?            _winBtnMinimize;
         private Label?            _winBtnMaxRestore;
@@ -93,11 +92,6 @@ namespace WebAppDashboard
         {
             InitializeComponent();
             _settings = AppSettingsService.Load();
-            if (_settings.Window.BorderlessBackColor == "auto" &&
-                _settings.Window.AutoDetectedColor is { } storedColor)
-            {
-                try { _autoDetectedColor = ColorTranslator.FromHtml(storedColor); } catch { }
-            }
             ApplyWindowBounds();
             LoadAppIcon();
             InitTrayIcon();
@@ -207,14 +201,23 @@ namespace WebAppDashboard
             AddMode(Strings.TrayColorAuto,   "auto");
 
             var customItem = new ToolStripMenuItem(Strings.TrayCustom) { Tag = (string?)null };
-            customItem.Checked = _settings.Window.BorderlessBackColor.StartsWith('#');
+            customItem.Checked = HexColor.IsValid6(_settings.Window.BorderlessBackColor);
             customItem.Click += (_, _) =>
             {
-                string current = _settings.Window.BorderlessBackColor.StartsWith('#')
-                    ? _settings.Window.BorderlessBackColor : "#1e1e2e";
+                string current = HexColor.IsValid6(_settings.Window.BorderlessBackColor)
+                    ? _settings.Window.BorderlessBackColor! : "#1e1e2e";
                 string? input = ShowInputDialog("Rahmenfarbe", "Hex-Farbe eingeben (z. B. #2d2d2d):", current);
-                if (input is not null)
-                    SetBorderColorMode(input.StartsWith('#') ? input : '#' + input, menu);
+                if (input is null) return;
+                string hex = input.Trim();
+                if (!hex.StartsWith('#'))
+                    hex = "#" + hex;
+                if (!HexColor.IsValid6(hex))
+                {
+                    MessageBox.Show(Strings.DlgColorInvalid, Strings.DlgInvalidInput,
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                SetBorderColorMode(hex, menu);
             };
             menu.DropDownItems.Add(customItem);
 
@@ -224,10 +227,7 @@ namespace WebAppDashboard
         private void SetBorderColorMode(string value, ToolStripMenuItem menu)
         {
             if (value != "auto")
-            {
-                _autoDetectedColor = null;
                 _settings.Window.AutoDetectedColor = null;
-            }
             _settings.Window.BorderlessBackColor = value;
             AppSettingsService.Save(_settings);
             ApplyBorderColor();
@@ -370,6 +370,7 @@ namespace WebAppDashboard
             if (index < 0 || index >= _settings.Pages.Count) return;
             _settings.ActivePageIndex = index;
             AppSettingsService.Save(_settings);
+            ApplyBorderColor();
             webView.CoreWebView2?.Navigate(_settings.Pages[index].Url);
             UpdatePageLabel();
             RebuildPagesSubmenu();
@@ -409,6 +410,7 @@ namespace WebAppDashboard
             _settings.Pages = dlg.ResultPages;
             _settings.ActivePageIndex = dlg.ResultActiveIndex;
             AppSettingsService.Save(_settings);
+            ApplyBorderColor();
             if (_settings.ActivePage is { } page)
                 webView.CoreWebView2?.Navigate(page.Url);
             UpdatePageLabel();
@@ -991,34 +993,37 @@ namespace WebAppDashboard
             _winLblPage.SetBounds(labelLeft, top, Math.Max(0, labelRight - labelLeft), h);
         }
 
-        // Rahmenfarbe je nach BorderlessBackColor-Einstellung anwenden.
+        // Effektiver Rahmenfarben-Modus: Eine von der aktiven Seite gesetzte #RGB
+        // übersteuert die globale Einstellung. Liefert "auto"/"system" oder "#rrggbb".
+        private string GetEffectiveBorderMode()
+        {
+            var pageColor = _settings.ActivePage?.BorderlessBackColor;
+            if (HexColor.IsValid6(pageColor))
+                return pageColor!;
+            return _settings.Window.BorderlessBackColor;
+        }
+
+        private string? EffectiveAutoDetectedColor()
+        {
+            if (_settings.ActivePage?.AutoDetectedColor is { } pc)
+                return pc;
+            return _settings.Window.AutoDetectedColor;
+        }
+
+        // Rahmenfarbe je nach effektivem Modus anwenden.
         private void ApplyBorderColor()
         {
             if (FormBorderStyle != FormBorderStyle.None) return;
-            Color color = _settings.Window.BorderlessBackColor switch
+
+            Color fallback = Color.FromArgb(0x1e, 0x1e, 0x2e);
+            string mode = GetEffectiveBorderMode();
+            Color color = mode switch
             {
                 "system" => GetSystemAccentColor(),
-                "auto"   => _autoDetectedColor ?? Color.FromArgb(0x1e, 0x1e, 0x2e),
-                var hex  => TryParseHtmlColor(hex)
+                "auto"   => HexColor.TryParse6(EffectiveAutoDetectedColor(), out var ac) ? ac : fallback,
+                _        => HexColor.TryParse6(mode, out var hex) ? hex : fallback
             };
-
-            // Reject transparent or semi-transparent colors (WinForms does not support them).
-            if (color.A != 255)
-            {
-                var fallback = Color.FromArgb(0x1e, 0x1e, 0x2e);
-                // Persist a safe fallback so the invalid value is not reapplied on restart.
-                _settings.Window.BorderlessBackColor = "#1e1e2e";
-                AppSettingsService.Save(_settings);
-                try { MessageBox.Show(this,
-                    Strings.DlgColorInvalid,
-                    Strings.DlgInvalidInput, MessageBoxButtons.OK, MessageBoxIcon.Warning); }
-                catch { }
-                BackColor = fallback;
-            }
-            else
-            {
-                BackColor = color;
-            }
+            BackColor = color;
         }
 
         // Windows-Akzentfarbe via DWM auslesen.
@@ -1036,24 +1041,23 @@ namespace WebAppDashboard
             }
         }
 
-        private static Color TryParseHtmlColor(string hex)
-        {
-            try   { return ColorTranslator.FromHtml(hex); }
-            catch { return Color.FromArgb(0x1e, 0x1e, 0x2e); }
-        }
-
         // Hintergrundfarbe der geladenen Seite per JavaScript ermitteln (Modus "auto").
         private async void DetectPageBackgroundColor()
         {
-            if (_settings.Window.BorderlessBackColor != "auto") return;
+            // Nur wenn der effektive Modus "auto" ist (Seite ohne eigene Farbe + global auto).
+            if (GetEffectiveBorderMode() != "auto") return;
             if (FormBorderStyle != FormBorderStyle.None) return;
+
+            // Seite einfrieren, damit das späte Ergebnis nicht auf eine andere Seite landet.
+            int pageIndex = _settings.ActivePageIndex;
 
             // SPA-Frameworks (Vue, React, …) setzen die Hintergrundfarbe erst nach dem
             // ersten Render-Durchlauf. Kurz warten, bevor wir getComputedStyle abfragen.
             await Task.Delay(500);
 
-            if (IsDisposed || _settings.Window.BorderlessBackColor != "auto") return;
-            if (FormBorderStyle != FormBorderStyle.None) return;
+            if (IsDisposed || FormBorderStyle != FormBorderStyle.None) return;
+            if (_settings.ActivePageIndex != pageIndex) return;
+            if (GetEffectiveBorderMode() != "auto") return;
 
             try
             {
@@ -1066,23 +1070,24 @@ namespace WebAppDashboard
                     })()
                     """);
                 string css = json.Trim('"');
-                if (css is "transparent" or "rgba(0, 0, 0, 0)")
-                {
-                    _autoDetectedColor = Color.White;
-                }
-                else
-                {
-                    var m = Regex.Match(css, @"rgba?\((\d+),\s*(\d+),\s*(\d+)");
-                    if (!m.Success) return;
-                    _autoDetectedColor = Color.FromArgb(
-                        int.Parse(m.Groups[1].Value),
-                        int.Parse(m.Groups[2].Value),
-                        int.Parse(m.Groups[3].Value));
-                }
-                BackColor = _autoDetectedColor.Value;
+                var detected = css is "transparent" or "rgba(0, 0, 0, 0)"
+                    ? Color.White
+                    : Regex.Match(css, @"rgba?\((\d+),\s*(\d+),\s*(\d+)") is { Success: true } m
+                        ? Color.FromArgb(
+                            int.Parse(m.Groups[1].Value),
+                            int.Parse(m.Groups[2].Value),
+                            int.Parse(m.Groups[3].Value))
+                        : (Color?)null;
+                if (detected is not { } dc) return;
+
+                if (_settings.ActivePageIndex != pageIndex) return;
+                if (_settings.ActivePage is { } page)
+                    page.AutoDetectedColor =
+                        $"#{dc.R:x2}{dc.G:x2}{dc.B:x2}";
                 _settings.Window.AutoDetectedColor =
-                    $"#{_autoDetectedColor.Value.R:x2}{_autoDetectedColor.Value.G:x2}{_autoDetectedColor.Value.B:x2}";
+                    $"#{dc.R:x2}{dc.G:x2}{dc.B:x2}";
                 AppSettingsService.Save(_settings);
+                ApplyBorderColor();
             }
             catch { }
         }
@@ -1203,6 +1208,7 @@ namespace WebAppDashboard
                 });
             }
 
+            ApplyBorderColor();
             webView.CoreWebView2.Navigate(_settings.ActivePage!.Url);
             if (_settings.Window.IsKioskMode)
             {

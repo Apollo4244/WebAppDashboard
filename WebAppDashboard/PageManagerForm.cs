@@ -14,6 +14,7 @@ namespace WebAppDashboard
         private readonly ListBox _listBox;
         private readonly TextBox _txtName;
         private readonly TextBox _txtUrl;
+        private readonly TextBox _txtBorderColor;
         private readonly Button  _btnApply;
         private readonly Button  _btnRemove;
         private readonly Button  _btnUp;
@@ -21,7 +22,12 @@ namespace WebAppDashboard
 
         public PageManagerForm(List<PageEntry> pages, int activeIndex)
         {
-            _pages       = pages.Select(p => new PageEntry { Name = p.Name, Url = p.Url }).ToList();
+            _pages       = pages.Select(p => new PageEntry
+            {
+                Name = p.Name, Url = p.Url,
+                BorderlessBackColor = p.BorderlessBackColor,
+                AutoDetectedColor   = p.AutoDetectedColor
+            }).ToList();
             _activeIndex = Math.Clamp(activeIndex, 0, Math.Max(0, pages.Count - 1));
 
             Text                = Strings.DlgPagesTitle;
@@ -29,7 +35,7 @@ namespace WebAppDashboard
             AutoScaleDimensions = new SizeF(7F, 15F);
             FormBorderStyle     = FormBorderStyle.FixedDialog;
             StartPosition       = FormStartPosition.CenterParent;
-            ClientSize          = new Size(760, 440);
+            ClientSize          = new Size(760, 500);
             MinimizeBox         = false;
             MaximizeBox         = false;
 
@@ -57,21 +63,23 @@ namespace WebAppDashboard
             _btnUp.Click     += BtnUp_Click;
             _btnDown.Click   += BtnDown_Click;
 
-            // --- Right column: Name + URL ---
+            // --- Right column: Name + URL + Border color ---
             const int rx = 234, rw = 514;
             var lblName = new Label { Text = Strings.DlgPageName, Left = rx, Top = 12,  Width = rw, Height = 20 };
             _txtName    = new TextBox                             { Left = rx, Top = 36,  Width = rw };
             var lblUrl  = new Label { Text = Strings.DlgPageUrl,  Left = rx, Top = 78,  Width = rw, Height = 20 };
             _txtUrl     = new TextBox                             { Left = rx, Top = 102, Width = rw };
+            var lblColor = new Label { Text = Strings.DlgPageBorderColor, Left = rx, Top = 140, Width = rw, Height = 20 };
+            _txtBorderColor = new TextBox { Left = rx, Top = 164, Width = rw };
             // Separator
             var separator = new Panel
             {
-                Left = 12, Top = 378, Width = 736, Height = 1,
+                Left = 12, Top = 428, Width = 736, Height = 1,
                 BackColor = SystemColors.ControlDark
             };
 
             // --- Apply / OK / Cancel ---
-            const int btnTop = 390;
+            const int btnTop = 440;
             _btnApply = new Button
             {
                 Text   = Strings.DlgPageApply,
@@ -104,7 +112,7 @@ namespace WebAppDashboard
             CancelButton = btnCancel;
 
             Controls.AddRange([_listBox, btnAdd, _btnRemove, _btnUp, _btnDown,
-                               lblName, _txtName, lblUrl, _txtUrl,
+                               lblName, _txtName, lblUrl, _txtUrl, lblColor, _txtBorderColor,
                                separator, _btnApply, btnOk, btnCancel]);
 
             PopulateList();
@@ -136,6 +144,7 @@ namespace WebAppDashboard
             bool hasSel       = _selectedIndex >= 0 && _selectedIndex < _pages.Count;
             _txtName.Text     = hasSel ? _pages[_selectedIndex].Name : "";
             _txtUrl.Text      = hasSel ? _pages[_selectedIndex].Url  : "";
+            _txtBorderColor.Text = hasSel ? _pages[_selectedIndex].BorderlessBackColor ?? "" : "";
             _btnApply.Enabled  = hasSel;
             _btnRemove.Enabled = hasSel && _pages.Count > 1;
             _btnUp.Enabled    = _selectedIndex > 0;
@@ -155,6 +164,7 @@ namespace WebAppDashboard
             if (_selectedIndex < 0 || _selectedIndex >= _pages.Count) return true;
             string name = _txtName.Text.Trim();
             string url  = _txtUrl.Text.Trim();
+            string color = _txtBorderColor.Text.Trim();
             if (string.IsNullOrEmpty(name))
             {
                 MessageBox.Show(Strings.DlgPageNameEmpty, Strings.DlgInvalidInput,
@@ -167,8 +177,16 @@ namespace WebAppDashboard
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+            if (!string.IsNullOrEmpty(color) && !HexColor.IsValid6(color))
+            {
+                MessageBox.Show(Strings.DlgColorInvalid, Strings.DlgInvalidInput,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
             _pages[_selectedIndex].Name = name;
             _pages[_selectedIndex].Url  = url;
+            _pages[_selectedIndex].BorderlessBackColor =
+                string.IsNullOrEmpty(color) ? null : color;
             PopulateList(_selectedIndex);
             return true;
         }

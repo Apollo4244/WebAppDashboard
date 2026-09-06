@@ -6,6 +6,14 @@ namespace WebAppDashboard
     {
         public string Name { get; set; } = "";
         public string Url  { get; set; } = Brand.DefaultUrl;
+
+        // Rahmenfarbe im Borderless-Modus, nur für diese Seite.
+        // null/leer → globale Window.BorderlessBackColor; sonst "#RRGGBB" (6-stellig).
+        public string? BorderlessBackColor { get; set; }
+
+        // Zuletzt erkannte Auto-Farbe (#rrggbb) dieser Seite – sofortiger Fallback beim
+        // Seitenwechsel, bis die Seite geladen und die Farbe neu erkannt ist.
+        public string? AutoDetectedColor { get; set; }
     }
 
     public class AppSettings
