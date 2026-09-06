@@ -21,29 +21,6 @@ Each brand already comes with its own `README.md`, `README-de.md` and `CHANGELOG
 
 ---
 
-## Features
-
-- **Borderless window** – frameless display by default, ideal for dashboard use
-- **Resizable & draggable** – resize from all edges, drag from the top strip
-- **Edge snap** – window edges snap flush to the working-area boundary of any connected monitor when dragged or resized within 16 px; pull the cursor 32 px away from the edge to release
-- **Drag bar window controls** – four caption buttons in the top strip: Kiosk · Minimize · Maximize/Restore · Close (exits the app). Clicking the Windows taskbar button toggles minimize/restore.
-- **System tray integration** – right-click the tray icon for the full menu; double-click or re-launch to restore the window
-- **Single-instance** – launching the app a second time restores the existing window (unique per brand)
-- **Multiple pages** – configure any number of named pages (name + URL); switch instantly via the tray *Pages* submenu, the drag-bar list button (⊞), or the Page Manager dialog. The first entry is the startup page.
-- **Page Manager** – dedicated dialog to add, rename, reorder and remove pages, including a per-page border color override (empty = global); *Apply* persists changes immediately without closing the dialog.
-- **Taskbar icon toggle** – independently control whether the app appears in the Windows taskbar, regardless of borderless mode.
-- **Configurable border color** – Windows accent color, auto-detected page background, custom hex color, or a per-page override for individual pages
-- **Configurable border width** – presets or custom value (2–40 px)
-- **Configurable zoom level** – presets (75–200 %) or custom value (25–500 %), saved across restarts
-- **Kiosk mode** – one-click full-screen lockdown: `TopMost` + full current-screen bounds; toggle via drag bar button or tray menu
-- **Persistent settings** – window position, size, URL and all preferences are saved automatically
-- **First-run setup** – prompts for a URL on the first launch
-- **Untrusted connections** – for local/intranet dashboards: `http` pages and `https` pages with invalid (e.g. self-signed) certificates load **without warnings** for the configured page hosts; login redirects and third-party hosts stay strictly validated
-- **Error pages** – friendly error screens for HTTP and network failures
-- **Localization** – English and German, automatically selected from Windows language settings
-
----
-
 ## Untrusted & Insecure Connections
 
 This app is **designed for dashboards that run on plain `http` or use self-signed /
@@ -64,6 +41,29 @@ usual certificate warning is shown there.
 > invalid certificate lets anyone who can impersonate the host intercept or modify
 > the traffic. Run the app on trusted networks and use a proper HTTPS certificate
 > for production systems.
+
+---
+
+## Features
+
+- **Borderless window** – frameless display by default, ideal for dashboard use
+- **Resizable & draggable** – resize from all edges, drag from the top strip
+- **Edge snap** – window edges snap flush to the working-area boundary of any connected monitor when dragged or resized within 16 px; pull the cursor 32 px away from the edge to release
+- **Drag bar window controls** – four caption buttons in the top strip: Kiosk · Minimize · Maximize/Restore · Close (exits the app). Clicking the Windows taskbar button toggles minimize/restore.
+- **System tray integration** – right-click the tray icon for the full menu; double-click or re-launch to restore the window
+- **Single-instance** – launching the app a second time restores the existing window (unique per brand)
+- **Multiple pages** – configure any number of named pages (name + URL); switch instantly via the tray *Pages* submenu, the drag-bar list button (⊞), or the Page Manager dialog. The first entry is the startup page.
+- **Page Manager** – dedicated dialog to add, rename, reorder and remove pages, including a per-page border color override (empty = global); *Apply* persists changes immediately without closing the dialog.
+- **Taskbar icon toggle** – independently control whether the app appears in the Windows taskbar, regardless of borderless mode.
+- **Configurable border color** – Windows accent color, auto-detected page background, custom hex color, or a per-page override for individual pages
+- **Configurable border width** – presets or custom value (2–40 px)
+- **Configurable zoom level** – presets (75–200 %) or custom value (25–500 %), saved across restarts
+- **Kiosk mode** – one-click full-screen lockdown: `TopMost` + full current-screen bounds; toggle via drag bar button or tray menu
+- **Persistent settings** – window position, size, URL and all preferences are saved automatically
+- **First-run setup** – prompts for a URL on the first launch
+- **Untrusted connections** – for local/intranet dashboards: `http` pages and `https` pages with invalid (e.g. self-signed) certificates load **without warnings** for the configured page hosts; login redirects and third-party hosts stay strictly validated
+- **Error pages** – friendly error screens for HTTP and network failures
+- **Localization** – English and German, automatically selected from Windows language settings
 
 ---
 

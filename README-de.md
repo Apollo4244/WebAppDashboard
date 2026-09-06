@@ -21,29 +21,6 @@ Jede Marke bringt ein eigenes `README.md`, `README-de.md` und `CHANGELOG.md` neb
 
 ---
 
-## Funktionen
-
-- **Rahmenloses Fenster** – standardmäßig ohne Titelleiste, ideal für Dashboard-Einsatz
-- **Größenänderung & Verschieben** – Größe an allen Kanten anpassbar, Ziehen über den oberen Streifen
-- **Kantenfang** – beim Verschieben oder Skalieren rasten Fensterkanten automatisch an den WorkingArea-Grenzen jedes angeschlossenen Monitors ein, sobald sie sich auf unter 16 px annähern; 32 px vom Rand wegziehen zum Lösen
-- **Drag-Leisten-Schaltflächen** – vier Steuerschaltflächen im oberen Streifen: Kiosk · Minimieren · Maximieren/Wiederherstellen · Schließen (beendet die App). Ein Klick auf das Taskleistensymbol wechselt zwischen Minimieren und Wiederherstellen.
-- **System-Tray-Integration** – Rechtsklick auf das Tray-Icon öffnet das vollständige Menü; Doppelklick oder Neustart stellt das Fenster wieder her
-- **Einzelinstanz** – ein erneuter Programmstart stellt das bereits laufende Fenster in den Vordergrund (pro Marke eindeutig)
-- **Mehrere Seiten** – beliebig viele benannte Seiten (Name + URL) konfigurierbar; Umschalten über das Tray-Untermenü *Seiten*, die ⊞-Schaltfläche in der Drag-Leiste oder den Seiten-Manager. Der erste Eintrag ist die Startseite.
-- **Seiten-Manager** – eigener Dialog zum Hinzufügen, Umbenennen, Sortieren und Entfernen von Seiten, inkl. eigener Rahmenfarbe pro Seite (leer = global); *Übernehmen* speichert sofort, ohne den Dialog zu schließen.
-- **Taskleisten-Symbol** – unabhängig vom rahmenlosen Modus steuerbar, ob die App in der Windows-Taskleiste erscheint.
-- **Konfigurierbare Rahmenfarbe** – Windows-Akzentfarbe, automatisch von der Seitenhintergrundfarbe erkannt, benutzerdefinierte Hex-Farbe oder eine pro Seite gesetzte Farbe
-- **Konfigurierbare Rahmenbreite** – Voreinstellungen oder eigener Wert (2–40 px)
-- **Konfigurierbarer Zoom** – Voreinstellungen (75–200 %) oder eigener Wert (25–500 %), wird beim Neustart wiederhergestellt
-- **Kiosk-Modus** – Vollbild-Sperrung per Klick: `TopMost` + voller aktueller Monitor; umschalten über Drag-Leisten-Schaltfläche oder Tray-Menü
-- **Einstellungen werden gespeichert** – Fensterposition, -größe, URL und alle Optionen werden automatisch gesichert
-- **Erststart-Einrichtung** – beim ersten Start wird nach einer URL gefragt
-- **Unsichere Verbindungen** – für lokale/Intranet-Dashboards: `http`-Seiten und `https`-Seiten mit ungültigen (z. B. selbstsignierten) Zertifikaten laden für die konfigurierten Seiten-Hosts **ohne Warnung**; Login-Weiterleitungen und Fremd-Hosts bleiben streng validiert
-- **Fehlerseiten** – übersichtliche Fehlerseiten bei HTTP- und Netzwerkfehlern
-- **Lokalisierung** – Englisch und Deutsch, automatisch anhand der Windows-Spracheinstellung gewählt
-
----
-
 ## Unsichere & nicht vertrauenswürdige Verbindungen
 
 Diese App ist **für Dashboards gedacht, die über `http` laufen oder selbstsignierte /
@@ -67,6 +44,29 @@ Login-Anbieter), Links zu anderen Servern und eingebettete Ressourcen Dritter we
 > der den Host imitiert, den Verkehr abzuhören oder zu verändern. Die App nur in
 > vertrauenswürdigen Netzen betreiben und für Produktivsysteme ein echtes
 > HTTPS-Zertifikat verwenden.
+
+---
+
+## Funktionen
+
+- **Rahmenloses Fenster** – standardmäßig ohne Titelleiste, ideal für Dashboard-Einsatz
+- **Größenänderung & Verschieben** – Größe an allen Kanten anpassbar, Ziehen über den oberen Streifen
+- **Kantenfang** – beim Verschieben oder Skalieren rasten Fensterkanten automatisch an den WorkingArea-Grenzen jedes angeschlossenen Monitors ein, sobald sie sich auf unter 16 px annähern; 32 px vom Rand wegziehen zum Lösen
+- **Drag-Leisten-Schaltflächen** – vier Steuerschaltflächen im oberen Streifen: Kiosk · Minimieren · Maximieren/Wiederherstellen · Schließen (beendet die App). Ein Klick auf das Taskleistensymbol wechselt zwischen Minimieren und Wiederherstellen.
+- **System-Tray-Integration** – Rechtsklick auf das Tray-Icon öffnet das vollständige Menü; Doppelklick oder Neustart stellt das Fenster wieder her
+- **Einzelinstanz** – ein erneuter Programmstart stellt das bereits laufende Fenster in den Vordergrund (pro Marke eindeutig)
+- **Mehrere Seiten** – beliebig viele benannte Seiten (Name + URL) konfigurierbar; Umschalten über das Tray-Untermenü *Seiten*, die ⊞-Schaltfläche in der Drag-Leiste oder den Seiten-Manager. Der erste Eintrag ist die Startseite.
+- **Seiten-Manager** – eigener Dialog zum Hinzufügen, Umbenennen, Sortieren und Entfernen von Seiten, inkl. eigener Rahmenfarbe pro Seite (leer = global); *Übernehmen* speichert sofort, ohne den Dialog zu schließen.
+- **Taskleisten-Symbol** – unabhängig vom rahmenlosen Modus steuerbar, ob die App in der Windows-Taskleiste erscheint.
+- **Konfigurierbare Rahmenfarbe** – Windows-Akzentfarbe, automatisch von der Seitenhintergrundfarbe erkannt, benutzerdefinierte Hex-Farbe oder eine pro Seite gesetzte Farbe
+- **Konfigurierbare Rahmenbreite** – Voreinstellungen oder eigener Wert (2–40 px)
+- **Konfigurierbarer Zoom** – Voreinstellungen (75–200 %) oder eigener Wert (25–500 %), wird beim Neustart wiederhergestellt
+- **Kiosk-Modus** – Vollbild-Sperrung per Klick: `TopMost` + voller aktueller Monitor; umschalten über Drag-Leisten-Schaltfläche oder Tray-Menü
+- **Einstellungen werden gespeichert** – Fensterposition, -größe, URL und alle Optionen werden automatisch gesichert
+- **Erststart-Einrichtung** – beim ersten Start wird nach einer URL gefragt
+- **Unsichere Verbindungen** – für lokale/Intranet-Dashboards: `http`-Seiten und `https`-Seiten mit ungültigen (z. B. selbstsignierten) Zertifikaten laden für die konfigurierten Seiten-Hosts **ohne Warnung**; Login-Weiterleitungen und Fremd-Hosts bleiben streng validiert
+- **Fehlerseiten** – übersichtliche Fehlerseiten bei HTTP- und Netzwerkfehlern
+- **Lokalisierung** – Englisch und Deutsch, automatisch anhand der Windows-Spracheinstellung gewählt
 
 ---
 
