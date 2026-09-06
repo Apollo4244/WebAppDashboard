@@ -4,6 +4,6 @@
     Beim Release genau hier erhöhen - nichts weiter nötig.
   -->
   <PropertyGroup>
-    <Version>1.0.7</Version>
+    <Version>1.0.9</Version>
   </PropertyGroup>
 </Project>

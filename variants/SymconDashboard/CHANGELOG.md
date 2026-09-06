@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [Unreleased]
+## [1.0.9]
 
 ### Added
 - **Invalid TLS certificates are accepted for configured pages:** `https` pages

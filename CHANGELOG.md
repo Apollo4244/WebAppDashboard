@@ -8,7 +8,7 @@ Full per-feature history of earlier releases can be found in the brand folders, 
 
 ---
 
-## [Unreleased]
+## [1.0.9]
 
 ### Added
 - **Invalid TLS certificates are accepted for configured pages:** `https` pages
