@@ -37,6 +37,10 @@ internal static class Strings
     public static string DlgPageName         => Get();
     public static string DlgPageUrl          => Get();
     public static string DlgPageBorderColor  => Get();
+    public static string DlgPageSize         => Get();
+    public static string DlgPageSizeCurrent  => Get();
+    public static string DlgPageSizeInvalid  => Get();
+    public static string DlgPageSizeViewport => Get();
     public static string DlgPageApply        => Get();
     public static string DlgPageNewName      => Get();
     public static string DlgPageNameEmpty    => Get();

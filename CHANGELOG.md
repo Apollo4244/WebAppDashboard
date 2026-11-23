@@ -8,6 +8,24 @@ Full per-feature history of earlier releases can be found in the brand folders, 
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Per-page window size:** Each page in the *Manage pages* dialog can define an
+  optional window size (width × height). *Use current size* fills in the current
+  size; empty fields keep the previous behaviour. The preset is applied on startup,
+  on every page switch, after closing the Page Manager and when leaving kiosk mode.
+  Only the size changes – the top-left corner stays in place – and it is clamped to
+  the working area of the current monitor. Maximized, minimized and kiosk windows
+  are left untouched.
+- **Viewport sizing (tablet simulation):** With *Size is the page viewport in CSS px*
+  the preset describes the web page viewport (`innerWidth` × `innerHeight`, e.g.
+  820 × 1180 for an iPad) instead of the outer window. Borders, drag bar, Windows
+  display scaling and zoom are taken into account; changing the zoom via the menu
+  resizes the window so the viewport stays the same (±1 CSS px rounding).
+
+---
+
 ## [1.0.9]
 
 ### Added

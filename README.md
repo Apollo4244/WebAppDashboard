@@ -54,6 +54,7 @@ usual certificate warning is shown there.
 - **Single-instance** – launching the app a second time restores the existing window (unique per brand)
 - **Multiple pages** – configure any number of named pages (name + URL); switch instantly via the tray *Pages* submenu, the drag-bar list button (⊞), or the Page Manager dialog. The first entry is the startup page.
 - **Page Manager** – dedicated dialog to add, rename, reorder and remove pages, including a per-page border color override (empty = global); *Apply* persists changes immediately without closing the dialog.
+- **Per-page window size** – optional width × height per page, applied on startup and on every page switch (size only, the top-left corner stays). Optionally as the page viewport in CSS px to simulate tablets (e.g. 820 × 1180 like an iPad); borders, Windows scaling and zoom are taken into account.
 - **Taskbar icon toggle** – independently control whether the app appears in the Windows taskbar, regardless of borderless mode.
 - **Configurable border color** – Windows accent color, auto-detected page background, custom hex color, or a per-page override for individual pages
 - **Configurable border width** – presets or custom value (2–40 px)
@@ -99,6 +100,7 @@ No installer required.
 | Switch page | Tray menu → *Pages* → page name **or** drag-bar ⊞ button |
 | Manage pages | Tray menu → *Pages → Manage pages…* |
 | Set per-page border color | Tray menu → *Pages → Manage pages…* → *Border color* field (empty = global) |
+| Set window size per page | Tray menu → *Pages → Manage pages…* → *Window size* (empty = keep size; tick *viewport in CSS px* for tablet simulation) |
 | Toggle borderless mode | Tray menu → *Borderless mode* (checkmark) |
 | Change border color | Tray menu → *Borderless → Color* |
 | Change border width | Tray menu → *Borderless → Width* |
