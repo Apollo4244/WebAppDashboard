@@ -15,18 +15,28 @@ namespace WebAppDashboard
         private readonly TextBox _txtName;
         private readonly TextBox _txtUrl;
         private readonly TextBox _txtBorderColor;
+        private readonly TextBox  _txtWidth;
+        private readonly TextBox  _txtHeight;
+        private readonly Button   _btnCurrentSize;
+        private readonly CheckBox _chkViewport;
+        private readonly Size     _currentSize;
+        private readonly Size     _currentViewport;
         private readonly Button  _btnApply;
         private readonly Button  _btnRemove;
         private readonly Button  _btnUp;
         private readonly Button  _btnDown;
 
-        public PageManagerForm(List<PageEntry> pages, int activeIndex)
+        public PageManagerForm(List<PageEntry> pages, int activeIndex, Size currentSize, Size currentViewport)
         {
+            _currentSize     = currentSize;
+            _currentViewport = currentViewport;
             _pages       = pages.Select(p => new PageEntry
             {
                 Name = p.Name, Url = p.Url,
                 BorderlessBackColor = p.BorderlessBackColor,
-                AutoDetectedColor   = p.AutoDetectedColor
+                AutoDetectedColor   = p.AutoDetectedColor,
+                Width = p.Width, Height = p.Height,
+                SizeIsViewport = p.SizeIsViewport
             }).ToList();
             _activeIndex = Math.Clamp(activeIndex, 0, Math.Max(0, pages.Count - 1));
 
@@ -44,6 +54,7 @@ namespace WebAppDashboard
             int lblH = Font.Height;      // komplette Zeilenhöhe inkl. Unterlängen
             int tbH  = Font.Height + 6;  // Einzeilen-TextBox
             int btnH = Font.Height + 25; // Buttons
+            int btnSH = Font.Height + 19;
 
             const int btnW  = 130;  // width of Apply / OK / Cancel
             const int crudW = 48;   // width of CRUD buttons (+/−/↑/↓)
@@ -86,15 +97,44 @@ namespace WebAppDashboard
             var lblColor = new Label { Text = Strings.DlgPageBorderColor, Left = rx, Top = y, Width = rw, Height = lblH };
             y += lblH + lblGap;
             _txtBorderColor = new TextBox { Left = rx, Top = y, Width = rw, Height = tbH };
+            y += tbH + rowGap;
+            var lblSize = new Label { Text = Strings.DlgPageSize, Left = rx, Top = y, Width = rw, Height = lblH };
+            y += lblH + lblGap;
+            int sizeRowH = Math.Max(tbH, btnSH);
+            int tbTop    = y + (sizeRowH - tbH) / 2;
+            _txtWidth  = new TextBox { Left = rx, Top = tbTop, Width = 90, Height = tbH };
+            var lblX   = new Label   { Text = "×", Left = rx + 94, Top = tbTop + 3, Width = 16, Height = lblH,
+                                       TextAlign = ContentAlignment.TopCenter };
+            _txtHeight = new TextBox { Left = rx + 114, Top = tbTop, Width = 90, Height = tbH };
+            _btnCurrentSize = new Button
+            {
+                Text = Strings.DlgPageSizeCurrent,
+                Left = rx + 216, Top = y + (sizeRowH - btnSH) / 2, Width = 200, Height = btnSH
+            };
+            y += sizeRowH + rowGap;
+            _chkViewport = new CheckBox
+            {
+                Text = Strings.DlgPageSizeViewport,
+                Left = rx, Top = y, Width = rw, Height = tbH
+            };
+            y += tbH;
+            _btnCurrentSize.Click += (_, _) =>
+            {
+                var s = _chkViewport.Checked ? _currentViewport : _currentSize;
+                _txtWidth.Text  = s.Width.ToString();
+                _txtHeight.Text = s.Height.ToString();
+            };
+            int sepTop = Math.Max(Math.Max(bTop + btnH, y) + 12, 428);
             // Separator
             var separator = new Panel
             {
-                Left = 12, Top = 428, Width = 736, Height = 1,
+                Left = 12, Top = sepTop, Width = 736, Height = 1,
                 BackColor = SystemColors.ControlDark
             };
 
             // --- Apply / OK / Cancel ---
-            const int btnTop = 440;
+            int btnTop = sepTop + 12;
+            ClientSize = new Size(760, btnTop + btnH + 12);
             _btnApply = new Button
             {
                 Text   = Strings.DlgPageApply,
@@ -128,6 +168,7 @@ namespace WebAppDashboard
 
             Controls.AddRange([_listBox, btnAdd, _btnRemove, _btnUp, _btnDown,
                                lblName, _txtName, lblUrl, _txtUrl, lblColor, _txtBorderColor,
+                               lblSize, _txtWidth, lblX, _txtHeight, _btnCurrentSize, _chkViewport,
                                separator, _btnApply, btnOk, btnCancel]);
 
             PopulateList();
@@ -160,6 +201,14 @@ namespace WebAppDashboard
             _txtName.Text     = hasSel ? _pages[_selectedIndex].Name : "";
             _txtUrl.Text      = hasSel ? _pages[_selectedIndex].Url  : "";
             _txtBorderColor.Text = hasSel ? _pages[_selectedIndex].BorderlessBackColor ?? "" : "";
+            bool hasSize      = hasSel && _pages[_selectedIndex].HasSize;
+            _txtWidth.Text    = hasSize ? _pages[_selectedIndex].Width!.Value.ToString()  : "";
+            _txtHeight.Text   = hasSize ? _pages[_selectedIndex].Height!.Value.ToString() : "";
+            _chkViewport.Checked    = hasSel && _pages[_selectedIndex].SizeIsViewport;
+            _txtWidth.Enabled       = hasSel;
+            _txtHeight.Enabled      = hasSel;
+            _btnCurrentSize.Enabled = hasSel;
+            _chkViewport.Enabled    = hasSel;
             _btnApply.Enabled  = hasSel;
             _btnRemove.Enabled = hasSel && _pages.Count > 1;
             _btnUp.Enabled    = _selectedIndex > 0;
@@ -198,11 +247,32 @@ namespace WebAppDashboard
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
+            if (!TryParseSize(_txtWidth.Text, _txtHeight.Text, out int? width, out int? height))
+            {
+                MessageBox.Show(Strings.DlgPageSizeInvalid, Strings.DlgInvalidInput,
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
             _pages[_selectedIndex].Name = name;
             _pages[_selectedIndex].Url  = url;
+            _pages[_selectedIndex].Width  = width;
+            _pages[_selectedIndex].Height = height;
+            _pages[_selectedIndex].SizeIsViewport = _chkViewport.Checked;
             _pages[_selectedIndex].BorderlessBackColor =
                 string.IsNullOrEmpty(color) ? null : color;
             PopulateList(_selectedIndex);
+            return true;
+        }
+
+        private static bool TryParseSize(string w, string h, out int? width, out int? height)
+        {
+            const int min = 200, max = 10000;
+            width = height = null;
+            w = w.Trim(); h = h.Trim();
+            if (w.Length == 0 && h.Length == 0) return true;
+            if (!int.TryParse(w, out int pw) || !int.TryParse(h, out int ph)) return false;
+            if (pw < min || pw > max || ph < min || ph > max) return false;
+            width = pw; height = ph;
             return true;
         }
 

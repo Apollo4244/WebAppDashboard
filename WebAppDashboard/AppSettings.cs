@@ -14,6 +14,18 @@ namespace WebAppDashboard
         // Zuletzt erkannte Auto-Farbe (#rrggbb) dieser Seite – sofortiger Fallback beim
         // Seitenwechsel, bis die Seite geladen und die Farbe neu erkannt ist.
         public string? AutoDetectedColor { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? Width  { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? Height { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool SizeIsViewport { get; set; }
+
+        [JsonIgnore]
+        public bool HasSize => Width is > 0 && Height is > 0;
     }
 
     public class AppSettings

@@ -327,6 +327,8 @@ namespace WebAppDashboard
             if (webView.CoreWebView2 is not null)
                 webView.ZoomFactor = factor;
             AppSettingsService.Save(_settings);
+            if (_settings.ActivePage is { SizeIsViewport: true } page)
+                ApplyPageSize(page);
             foreach (ToolStripMenuItem item in menu.DropDownItems.OfType<ToolStripMenuItem>())
                 item.Checked = item.Tag switch
                 {
@@ -372,6 +374,7 @@ namespace WebAppDashboard
             AppSettingsService.Save(_settings);
             ApplyBorderColor();
             webView.CoreWebView2?.Navigate(_settings.Pages[index].Url);
+            ApplyPageSize(_settings.Pages[index]);
             UpdatePageLabel();
             RebuildPagesSubmenu();
         }
@@ -404,7 +407,11 @@ namespace WebAppDashboard
 
         private void OpenPageManager()
         {
-            using var dlg = new PageManagerForm(_settings.Pages, _settings.ActivePageIndex);
+            Size current = WindowState == FormWindowState.Normal && !_settings.Window.IsKioskMode
+                ? Size
+                : new Size(_settings.Window.Width, _settings.Window.Height);
+            using var dlg = new PageManagerForm(_settings.Pages, _settings.ActivePageIndex,
+                current, CurrentViewportCss());
             var result = dlg.ShowDialog(this);
             if (result != DialogResult.OK && !dlg.HasAppliedChanges) return;
             _settings.Pages = dlg.ResultPages;
@@ -412,7 +419,10 @@ namespace WebAppDashboard
             AppSettingsService.Save(_settings);
             ApplyBorderColor();
             if (_settings.ActivePage is { } page)
+            {
                 webView.CoreWebView2?.Navigate(page.Url);
+                ApplyPageSize(page);
+            }
             UpdatePageLabel();
             RebuildPagesSubmenu();
         }
@@ -468,6 +478,8 @@ namespace WebAppDashboard
             ShowInTaskbar = win.ShowInTaskbar;
 
             var bounds = new Rectangle(win.Left, win.Top, win.Width, win.Height);
+            if (_settings.ActivePage is { HasSize: true } startPage)
+                bounds.Size = ClampToScreen(bounds.Location, WindowSizeForPage(startPage));
             if (IsVisibleOnAnyScreen(bounds))
             {
                 StartPosition = FormStartPosition.Manual;
@@ -477,7 +489,7 @@ namespace WebAppDashboard
             {
                 // Gespeicherte Position liegt außerhalb aller Monitore → mittig auf Primärmonitor
                 StartPosition = FormStartPosition.CenterScreen;
-                Size = new Size(win.Width, win.Height);
+                Size = bounds.Size;
             }
 
             if (win.Maximized)
@@ -1163,9 +1175,52 @@ namespace WebAppDashboard
             }
             _settings.Window.IsKioskMode = enter;
             ApplyWebViewBounds();
+            if (!enter) ApplyPageSize(_settings.ActivePage);
             AppSettingsService.Save(_settings);
             _kioskMenuItem.Checked = enter;
             if (!enter) _winBtnKiosk!.Text = "\uE92D";
+        }
+
+        private void ApplyPageSize(PageEntry? page)
+        {
+            if (page is not { HasSize: true }) return;
+            if (_settings.Window.IsKioskMode || WindowState != FormWindowState.Normal) return;
+
+            Size target = ClampToScreen(Location, WindowSizeForPage(page));
+            if (Size == target) return;
+            Size = target;
+            ApplyWebViewBounds();
+        }
+
+        private Size WindowSizeForPage(PageEntry page)
+        {
+            var size = new Size(page.Width!.Value, page.Height!.Value);
+            if (!page.SizeIsViewport) return size;
+
+            double scale  = ViewportScale();
+            var    client = new Size((int)Math.Round(size.Width * scale), (int)Math.Round(size.Height * scale));
+            return FormBorderStyle == FormBorderStyle.None
+                ? new Size(client.Width  + 2 * ResizeBorder,
+                           client.Height + 3 * ResizeBorder + DragBarHeight)
+                : SizeFromClientSize(client);
+        }
+
+        private double ViewportScale()
+        {
+            double zoom = webView.CoreWebView2 is not null ? webView.ZoomFactor : _settings.Window.ZoomFactor;
+            return DeviceDpi / 96.0 * (zoom > 0 ? zoom : 1.0);
+        }
+
+        private Size CurrentViewportCss()
+        {
+            double scale = ViewportScale();
+            return new Size((int)Math.Round(webView.Width / scale), (int)Math.Round(webView.Height / scale));
+        }
+
+        private static Size ClampToScreen(Point location, Size size)
+        {
+            var area = Screen.FromPoint(location).WorkingArea;
+            return new Size(Math.Min(size.Width, area.Width), Math.Min(size.Height, area.Height));
         }
 
         // Prüft ob die obere Kante des Fensters auf einem der aktuellen Monitore sichtbar ist

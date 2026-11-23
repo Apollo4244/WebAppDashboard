@@ -18,6 +18,7 @@ Ein schlanker, rahmenloser Dashboard-Viewer für [IP-Symcon](https://www.symcon.
 - **Einzelinstanz** – ein erneuter Programmstart stellt das bereits laufende Fenster in den Vordergrund
 - **Mehrere Seiten** – beliebig viele benannte Seiten (Name + URL) konfigurierbar; Umschalten über das Tray-Untermenü *Seiten*, die ⊞-Schaltfläche in der Drag-Leiste oder den Seiten-Manager. Der erste Eintrag ist die Startseite.
 - **Seiten-Manager** – eigener Dialog zum Hinzufügen, Umbenennen, Sortieren und Entfernen von Seiten, inkl. eigener Rahmenfarbe pro Seite (leer = global); *Übernehmen* speichert sofort, ohne den Dialog zu schließen.
+- **Fenstergröße pro Seite** – optional Breite × Höhe pro Seite, wird beim Start und bei jedem Seitenwechsel gesetzt (nur die Größe, die linke obere Ecke bleibt). Wahlweise als Anzeigebereich der Seite in CSS-px, um Tablets zu simulieren (z. B. 820 × 1180 wie ein iPad); Rahmen, Windows-Skalierung und Zoom werden herausgerechnet.
 - **Taskleisten-Symbol** – unabhängig vom rahmenlosen Modus steuerbar, ob die App in der Windows-Taskleiste erscheint.
 - **Konfigurierbare Rahmenfarbe**
   - Windows-Akzentfarbe
@@ -93,6 +94,7 @@ Kein Installer erforderlich.
 | Seite wechseln | Tray-Menü → *Seiten* → Seitenname **oder** ⊞-Schaltfläche in der Drag-Leiste |
 | Seiten verwalten | Tray-Menü → *Seiten → Seiten verwalten…* |
 | Rahmenfarbe pro Seite setzen | Tray-Menü → *Seiten → Seiten verwalten…* → Feld *Rahmenfarbe* (leer = global) |
+| Fenstergröße pro Seite setzen | Tray-Menü → *Seiten → Seiten verwalten…* → *Fenstergröße* (leer = Größe beibehalten; Häkchen *Anzeigebereich in CSS-px* für Tablet-Simulation) |
 | Rahmenlosen Modus umschalten | Tray-Menü → *Rahmenloser Modus* (Häkchen) |
 | Rahmenfarbe ändern | Tray-Menü → *Rahmenlos → Farbe* |
 | Rahmenbreite ändern | Tray-Menü → *Rahmenlos → Breite* |

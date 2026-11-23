@@ -30,6 +30,10 @@
   <data name="DlgPageName" xml:space="preserve"><value>Name:</value></data>
   <data name="DlgPageUrl" xml:space="preserve"><value>URL:</value></data>
   <data name="DlgPageBorderColor" xml:space="preserve"><value>Border color (empty = global):</value></data>
+  <data name="DlgPageSize" xml:space="preserve"><value>Window size in px (empty = keep current size):</value></data>
+  <data name="DlgPageSizeCurrent" xml:space="preserve"><value>Use current size</value></data>
+  <data name="DlgPageSizeInvalid" xml:space="preserve"><value>Please enter width and height (200–10000 px) or leave both fields empty.</value></data>
+  <data name="DlgPageSizeViewport" xml:space="preserve"><value>Size is the page viewport in CSS px (e.g. tablet)</value></data>
   <data name="DlgPageApply" xml:space="preserve"><value>Apply</value></data>
   <data name="DlgPageNewName" xml:space="preserve"><value>New page</value></data>
   <data name="DlgPageNameEmpty" xml:space="preserve"><value>Please enter a name for this page.</value></data>
